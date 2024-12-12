@@ -51,8 +51,15 @@ style.textContent = `
     display: none;
     color: black;
     width: 500px;
+    max-height: 500px;
     border-radius: 0.5rem;
+    overflow-y: scroll;
   }
+
+  .verse-number {
+  font-size: 0.8em;
+  color: gray
+}
 `;
 document.head.appendChild(style);
 
@@ -69,7 +76,24 @@ document.body.addEventListener('mouseover', (e) => {
     fetch(`https://bible-api.com/${reference}`)
       .then((response) => response.json())
       .then((data) => {
-        popup.textContent = `${data.text} (${data.reference})`;
+        // Clear the popup content before appending new verses
+        popup.innerHTML = '';
+
+        data.verses.forEach((verse) => {
+          const verseContent = `${verse.text.trim()}`;
+          
+          const verseElement = document.createElement('p');
+          
+          const verseNumber = document.createElement('span');
+          verseNumber.textContent = `${verse.verse}  `;
+          verseNumber.className = 'verse-number';
+          
+          verseElement.appendChild(verseNumber);
+          verseElement.appendChild(document.createTextNode(verseContent));
+          
+          popup.appendChild(verseElement);
+        });
+
         popup.style.left = `${e.pageX + 10}px`;
         popup.style.top = `${e.pageY + 10}px`;
         popup.style.display = 'block';
@@ -84,7 +108,8 @@ document.body.addEventListener('mouseover', (e) => {
       });
   }
 });
-// Hide the popup when the mouse leaves both the verse and the popup
+
+
 document.body.addEventListener('mouseout', (e) => {
   if (e.target.classList.contains('bible-verse-highlight') && !popup.contains(e.relatedTarget)) {
     popup.style.display = 'none';
@@ -92,12 +117,10 @@ document.body.addEventListener('mouseout', (e) => {
   }
 });
 
-// Keep the popup visible when hovering over it
 popup.addEventListener('mouseover', () => {
   isPopupVisible = true;
 });
 
-// Hide the popup only when the mouse leaves both the verse and the popup
 popup.addEventListener('mouseout', (e) => {
   if (!popup.contains(e.relatedTarget)) {
     popup.style.display = 'none';
