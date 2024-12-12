@@ -1,0 +1,1 @@
+Have you ever come across an online article that references scripture but doesn't include the full verse?

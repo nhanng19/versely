@@ -1,0 +1,27 @@
+{
+    "manifest_version": 3,
+    "name": "Versely",
+    "version": "1.0",
+    "description": "Highlight a Bible verse reference to fetch the full text.",
+    "permissions": [
+        "contextMenus",
+        "scripting",
+        "storage"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "host_permissions": [
+        "https://bible-api.com/*"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"],
+            "run_at": "document_end"
+        }
+    ]
+}
