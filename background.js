@@ -6,6 +6,16 @@ chrome.runtime.onInstalled.addListener(() => {
     });
   });
   
+
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    if (changeInfo.status === "complete" && tab.url && tab.url.endsWith(".pdf")) {
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ['content.js']
+      });
+    }
+  });
+
   chrome.contextMenus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "lookupVerse" && info.selectionText && tab?.id) {
       chrome.scripting.executeScript({

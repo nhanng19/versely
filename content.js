@@ -3,7 +3,6 @@ const bibleVerseRegex = /\b([1-3]?\s?[A-Za-z]+\.?)\s(\d+):(\d+)(?:[–-](\d+))?\
 function highlightBibleReferences(node) {
   if (node.nodeType === Node.TEXT_NODE) {
     const matches = node.textContent.match(bibleVerseRegex);
-    console.log(node.textContent)
     if (matches) {
       const parent = node.parentNode;
       const fragment = document.createDocumentFragment();
@@ -25,11 +24,11 @@ function highlightBibleReferences(node) {
       parent.replaceChild(fragment, node);
     }
   } else if (node.nodeType === Node.ELEMENT_NODE && node.childNodes) {
-    node.childNodes.forEach((child) => highlightBibleReferences(child));
+    Array.from(node.childNodes).forEach((child) => highlightBibleReferences(child));
   }
 }
 
-document.body.childNodes.forEach((node) => highlightBibleReferences(node));
+highlightBibleReferences(document.body);
 
 const style = document.createElement('style');
 style.textContent = `
@@ -50,8 +49,8 @@ style.textContent = `
     z-index: 10000;
     display: none;
     color: black;
-    width: 500px;
-    max-height: 500px;
+    width: 400px;
+    max-height: 400px;
     border-radius: 0.5rem;
     overflow-y: scroll;
   }
@@ -73,10 +72,9 @@ document.body.addEventListener('mouseover', (e) => {
   if (e.target.classList.contains('bible-verse-highlight')) {
     const reference = e.target.dataset.reference;
 
-    fetch(`https://bible-api.com/${reference}`)
+    fetch(`https://bible-api.com/${reference}?translation=kjv`)
       .then((response) => response.json())
       .then((data) => {
-        // Clear the popup content before appending new verses
         popup.innerHTML = '';
 
         data.verses.forEach((verse) => {
@@ -108,7 +106,6 @@ document.body.addEventListener('mouseover', (e) => {
       });
   }
 });
-
 
 document.body.addEventListener('mouseout', (e) => {
   if (e.target.classList.contains('bible-verse-highlight') && !popup.contains(e.relatedTarget)) {

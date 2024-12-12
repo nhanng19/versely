@@ -3,6 +3,9 @@
     "name": "Versely",
     "version": "1.0",
     "description": "Highlight a Bible verse reference to fetch the full text.",
+    "action": {
+        "default_popup": "popup.html"
+    },
     "permissions": [
         "contextMenus",
         "scripting",
